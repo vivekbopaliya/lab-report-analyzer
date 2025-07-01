@@ -1,0 +1,56 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reports LabReport[]
+  healthParameters HealthParameter[]
+
+  @@map("users")
+}
+
+model LabReport {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fileName    String
+  fileType    String
+  fileSize    Int
+  extractedText String?
+  uploadedAt  DateTime @default(now())
+  
+  userId      String @db.ObjectId
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parameters  HealthParameter[]
+
+  @@map("lab_reports")
+}
+
+model HealthParameter {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  parameter    String
+  value        String
+  unit         String
+  normalRange  String
+  isAbnormal   Boolean  @default(false)
+  testDate     DateTime @default(now())
+  createdAt    DateTime @default(now())
+  
+  userId       String @db.ObjectId
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labReportId  String @db.ObjectId
+  labReport    LabReport @relation(fields: [labReportId], references: [id], onDelete: Cascade)
+
+  @@map("health_parameters")
+}
