@@ -1,9 +1,11 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { NextRequest } from 'next/server';
-import { prisma } from './prisma';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { NextRequest } from "next/server";
+import { prisma } from "./prisma";
+import { cookies } from "next/headers";
+import * as jose from "jose";
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET || 'fallback-secret';
+const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET || "fallback-secret";
 
 export interface User {
   id: string;
@@ -18,31 +20,35 @@ export interface JWTPayload {
 }
 
 export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
 
-export  function verifyToken(token: string){
+export function verifyToken(token: string) {
   try {
-    console.log(token)
-    const val =  jwt.verify(token, JWT_SECRET) as JWTPayload;
-    console.log(val)
-    return val
+    console.log(token);
+    const val = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    console.log(val);
+    return val;
   } catch {
     return null;
   }
 }
 
-export async function createUser(email: string, password: string, name: string): Promise<User> {
+export async function createUser(
+  email: string,
+  password: string,
+  name: string
+): Promise<User> {
   const existingUser = await prisma.user.findUnique({
-    where: { email: email.toLowerCase() }
+    where: { email: email.toLowerCase() },
   });
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new Error("User already exists");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 12)
-  
+  const hashedPassword = await bcrypt.hash(password, 12);
+
   const user = await prisma.user.create({
     data: {
       email: email.toLowerCase(),
@@ -54,22 +60,25 @@ export async function createUser(email: string, password: string, name: string):
       email: true,
       name: true,
       createdAt: true,
-    }
+    },
   });
-  
+
   return user;
 }
 
-export async function authenticateUser(email: string, password: string): Promise<User | null> {
+export async function authenticateUser(
+  email: string,
+  password: string
+): Promise<User | null> {
   const user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
   });
-  
+
   if (!user) return null;
-  
-  const isValid = await bcrypt.compare(password, user.password)
-  if (!isValid)  return null;
-  
+
+  const isValid = await bcrypt.compare(password, user.password);
+  if (!isValid) return null;
+
   return {
     id: user.id,
     email: user.email,
@@ -86,18 +95,30 @@ export async function getUserById(id: string): Promise<User | null> {
       email: true,
       name: true,
       createdAt: true,
-    }
+    },
   });
-  
+
+  if (!user) return null;
+
   return user;
 }
 
-export async function getUserFromRequest(request: NextRequest): Promise<User | null> {
-  const token = request.cookies.get('auth-token')?.value;
+export async function getUserFromRequest(
+  request: NextRequest
+): Promise<User | null> {
+  const token = request.cookies.get("auth-token")?.value;
   if (!token) return null;
-  
-  const payload =  verifyToken(token);
+
+  const payload = verifyToken(token);
   if (!payload) return null;
-  
+
   return await getUserById(payload.userId);
+}
+
+export async function getUserFromCookie(): Promise<User | null> {
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("auth-token");
+  if (!token) return null;
+  const payload = verifyToken(token.value);
+  return await getUserById(payload?.userId || "");
 }
