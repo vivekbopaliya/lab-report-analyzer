@@ -1,5 +1,9 @@
-import LoadingState from "@/components/dashboard-page/LoadingState";
+import LoadingState from "@/components/common/LoadingState";
 
 export default function Loading() {
-  return <div><LoadingState /></div>;
+  return (
+    <div>
+      <LoadingState text="Loading Dashboard..." />
+    </div>
+  );
 }

@@ -16,16 +16,7 @@ export default function UploadPage() {
 
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile);
-    processFile(uploadedFile, {
-      onSuccess: (result) => {
-        if (result?.parameters) {
-          localStorage.setItem(
-            "recent-reports",
-            JSON.stringify(result.parameters)
-          );
-        }
-      },
-    });
+    processFile(uploadedFile);
   };
 
   const handleReset = () => {

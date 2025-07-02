@@ -1,9 +1,10 @@
-'use client'
+"use client";
 
 import { Activity } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/hooks/use-logout";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -13,7 +14,13 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { mutateAsync: logout, isPending: isLoading } = useLogout();
 
+  const handleLogout = async () => {
+    await logout();
+    route.push("/signin");
+  };
+  const route = useRouter();
   return (
     <nav className="bg-white shadow-sm border-b mb-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,6 +40,15 @@ export default function Navbar() {
                 </Button>
               </Link>
             ))}
+            <Button
+              onClick={handleLogout}
+              isLoading={isLoading}
+              type="submit"
+              variant="destructive"
+              size="sm"
+            >
+              Logout
+            </Button>
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ export interface TrendData {
   unit: string;   
   normalRange: string;
   data: {
-    date: string; // ISO date string
-    value: number; // Numeric value for the parameter
+    date: string; 
+    value: number; 
   }[];
 }

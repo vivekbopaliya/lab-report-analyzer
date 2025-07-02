@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-
     const user = await getUserFromRequest(request);
 
     if (!user) {
@@ -35,10 +34,13 @@ export async function POST(request: NextRequest) {
     const formDataToSend = new FormData();
     formDataToSend.append("file", file);
 
-    const response = await fetch("http://localhost:8000/process-document", {
-      method: "POST",
-      body: formDataToSend,
-    });
+    const response = await fetch(
+      `${process.env.FASTAPI_URL}/process-document`,
+      {
+        method: "POST",
+        body: formDataToSend,
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -50,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     const result = await response.json();
 
-    const {parameters} = await createLabReport(
+    const { parameters } = await createLabReport(
       user?.id,
       file.name,
       file.type,
