@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lab Report Analyzer
+
+A modern web application for uploading, extracting, and analyzing health/lab reports using OCR and AI. Built with Next.js (frontend) and FastAPI (backend microservice).
+
+## Demo
+
+Watch the demo on Google Drive: [Demo Video](https://drive.google.com/drive/folders/1qUIsVZZJNkYmkpiHP-pkApjgC1tB_muu?usp=sharing)
+
+
+## Features
+
+- **User Authentication:** Secure signup, login, and JWT-based session management.
+- **File Upload:** Upload PDF or image lab reports (max 5MB).
+- **OCR & AI Extraction:** Extracts health parameters from uploaded reports using FastAPI microservice.
+- **Dashboard:** Visualize trends, view extracted parameters, and manage your reports.
+- **Responsive UI:** Clean, modern interface with React, Tailwind CSS, and shadcn/ui components.
+- **Error Handling:** Friendly error messages and robust validation throughout the app.
+
+## Tech Stack
+
+- **Frontend:** Next.js 14 (App Router), React, Tailwind CSS, shadcn/ui, React Query, Axios
+- **Backend:** FastAPI (Python), OCR/AI extraction logic
+- **Database:** Prisma ORM (for user and report storage)
+- **Authentication:** JWT (JSON Web Tokens), secure cookies
+
+## FastAPI Microservice
+
+We use a custom [FastAPI microservice](https://github.com/vivekbopaliya/lab-report-analyzer-microservice) for OCR and AI-based extraction of health parameters from uploaded PDF and image lab reports. The Next.js frontend securely uploads files to this microservice, which processes the files and returns structured health data for further analysis and visualization.
 
 ## Getting Started
 
-First, run the development server:
+### Next.js Frontend
 
 ```bash
+cd nextjs
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Visit [http://localhost:3000](http://localhost:3000)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The following environment variables are required for local development and deployment. Create a `.env` file in the `nextjs/` directory and set these values:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `DATABASE_URL` – Your database connection string.
+- `NEXT_PUBLIC_JWT_SECRET` – Secret key for signing and verifying JWT tokens. 
 
-## Learn More
+- `FASTAPI_URL` – URL of your FastAPI backend (e.g., `http://localhost:8000`). Used for file processing and OCR extraction.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `OPENAI_API_KEY` - Your openai api key.
