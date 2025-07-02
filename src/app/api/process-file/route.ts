@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     const result = await response.json();
 
-    await createLabReport(
+    const {parameters} = await createLabReport(
       user?.id,
       file.name,
       file.type,
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      parameters: result.parameters,
+      parameters: parameters,
     });
   } catch (error) {
     console.error("Upload processing error:", error);

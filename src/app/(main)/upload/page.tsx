@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { HealthParameter } from "@/types/health-parameter";
-import Header from "@/components/upload-page/Header";
 import UploadArea from "@/components/upload-page/UploadArea";
 import ProcessingStatus from "@/components/upload-page/ProcessingStatus";
 import ResultsTable from "@/components/upload-page/ResultTable";
@@ -42,7 +40,6 @@ export default function UploadPage() {
   if (!file) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header />
         <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <UploadArea onFileUpload={handleFileUpload} />
         </main>
@@ -52,7 +49,6 @@ export default function UploadPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
       <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isLoading && <ProcessingStatus fileName={file.name} />}
 

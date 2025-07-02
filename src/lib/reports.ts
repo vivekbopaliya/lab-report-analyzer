@@ -1,5 +1,6 @@
 import { HealthParameter } from '@/types/health-parameter';
 import { prisma } from './prisma';
+import { generateHealthParameterInsight } from './openai';
 
 export interface LabReportData {
   id: string;
@@ -19,6 +20,23 @@ export async function createLabReport(
   extractedText: string,
   parameters: HealthParameter[]
 ) {
+  // Generate AI insights for abnormal parameters
+  const parametersWithInsights = await Promise.all(parameters.map(async param => {
+    let aiInsight: string | undefined = undefined;
+    if (param.isAbnormal) {
+      aiInsight = await generateHealthParameterInsight(param.parameter, param.value, param.unit, param.normalRange);
+    }
+    return {
+      parameter: param.parameter,
+      value: param.value,
+      unit: param.unit,
+      normalRange: param.normalRange,
+      isAbnormal: param.isAbnormal || false,
+      userId,
+      aiInsight,
+    };
+  }));
+
   return await prisma.labReport.create({
     data: {
       fileName,
@@ -27,14 +45,7 @@ export async function createLabReport(
       extractedText,
       userId,
       parameters: {
-        create: parameters.map(param => ({
-          parameter: param.parameter,
-          value: param.value,
-          unit: param.unit,
-          normalRange: param.normalRange,
-          isAbnormal: param.isAbnormal || false,
-          userId,
-        }))
+        create: parametersWithInsights
       }
     },
     include: {
@@ -67,6 +78,7 @@ export async function getUserReports(userId: string): Promise<LabReportData[]> {
       unit: param.unit,
       normalRange: param.normalRange,
       isAbnormal: param.isAbnormal,
+      aiInsight: param.aiInsight || undefined, 
     }))
   }));
 }
@@ -102,7 +114,7 @@ export async function getUserParameterHistory(userId: string, parameterName: str
     orderBy: {
       testDate: 'asc',
     },
-    take: 12, // Last 12 entries
+    take: 12, 
   });
 
   return parameters.map(param => ({

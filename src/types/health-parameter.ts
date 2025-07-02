@@ -4,6 +4,7 @@ export interface HealthParameter {
   unit: string;
   normalRange: string;
   isAbnormal?: boolean;
+  aiInsight?: string;
 }
 
 export interface TrendData {

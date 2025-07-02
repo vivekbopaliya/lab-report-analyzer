@@ -16,6 +16,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import Link from "next/link";
 import { HealthParameter } from "@/types/health-parameter";
 
@@ -67,57 +73,68 @@ export default function ResultsTable({
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/4">Parameter</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Unit</TableHead>
-                  <TableHead>Normal Range</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {extractedData.map((param, index) => (
-                  <TableRow
-                    key={index}
-                    className={param.isAbnormal ? "bg-red-50" : ""}
-                  >
-                    <TableCell className="font-medium">
-                      {param.parameter}
-                    </TableCell>
-                    <TableCell
-                      className={
-                        param.isAbnormal ? "text-red-600 font-medium" : ""
-                      }
-                    >
-                      {param.value}
-                    </TableCell>
-                    <TableCell>{param.unit}</TableCell>
-                    <TableCell>{param.normalRange}</TableCell>
-                    <TableCell>
-                      {param.isAbnormal ? (
-                        <Badge
-                          variant="destructive"
-                          className="flex items-center gap-1"
-                        >
-                          <AlertTriangle className="h-3 w-3" />
-                          Needs Attention
-                        </Badge>
-                      ) : (
-                        <Badge
-                          variant="secondary"
-                          className="flex items-center gap-1"
-                        >
-                          <Check className="h-3 w-3" />
-                          Normal
-                        </Badge>
-                      )}
-                    </TableCell>
+            <TooltipProvider>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/4">Parameter</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Unit</TableHead>
+                    <TableHead>Normal Range</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {extractedData.map((param, index) => (
+                    <TableRow
+                      key={index}
+                      className={param.isAbnormal ? "bg-red-50" : ""}
+                    >
+                      <TableCell className="font-medium">
+                        {param.parameter}
+                      </TableCell>
+                      <TableCell
+                        className={
+                          param.isAbnormal ? "text-red-600 font-medium" : ""
+                        }
+                      >
+                        {param.value}
+                      </TableCell>
+                      <TableCell>{param.unit}</TableCell>
+                      <TableCell>{param.normalRange}</TableCell>
+                      <TableCell>
+                        {param.isAbnormal ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge
+                                variant="destructive"
+                                className="flex items-center gap-1 cursor-help"
+                              >
+                                <AlertTriangle className="h-3 w-3" />
+                                Needs Attention
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-sm">
+                                {param.aiInsight || "This value is outside the normal range and may need attention."}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            <Check className="h-3 w-3" />
+                            Normal
+                          </Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TooltipProvider>
           </div>
 
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
