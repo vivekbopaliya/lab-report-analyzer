@@ -15,7 +15,12 @@ const processFileApi = async (file: File): Promise<ProcessingResult> => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to process file');
+    let errorMsg = 'Failed to process file';
+    try {
+      const errorData = await response.json();
+      if (errorData.message) errorMsg = errorData.message;
+    } catch {}
+    throw new Error(errorMsg);
   }
 
   return response.json();

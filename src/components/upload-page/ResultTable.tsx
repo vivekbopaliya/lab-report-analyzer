@@ -44,7 +44,7 @@ export default function ResultsTable({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex mb-2 items-center gap-2">
                 <Check className="h-5 w-5 text-green-600" />
                 Extraction Complete
               </CardTitle>
@@ -63,7 +63,7 @@ export default function ResultsTable({
         </CardHeader>
       </Card>
 
-      <Card className="animate-fade-in">
+      <Card className="animate-fade-in mt-4">
         <CardHeader>
           <CardTitle className="text-xl">Extracted Health Parameters</CardTitle>
           <CardDescription className="text-gray-600">

@@ -31,7 +31,7 @@ export default function UploadPage() {
   if (!file) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-grow min-w-7/12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <UploadArea onFileUpload={handleFileUpload} />
         </main>
       </div>
@@ -40,7 +40,7 @@ export default function UploadPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-grow max-w-4xl min-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isLoading && <ProcessingStatus fileName={file.name} />}
 
         {data?.parameters && (
@@ -52,7 +52,7 @@ export default function UploadPage() {
           />
         )}
 
-        {error && <ErrorState onTryAgain={handleReset} />}
+        {error && <ErrorState onTryAgain={handleReset} message={error} />}
       </main>
     </div>
   );

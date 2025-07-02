@@ -14,7 +14,7 @@ export default function EmptyState() {
         <p className="text-gray-600 mb-6">
           Upload your first lab report to start tracking your health parameters
         </p>
-        <Link href="/upload">
+        <Link href="/upload" className="mx-auto flex items-center justify-center">
           <Button>
             <Upload className="mr-2 h-4 w-4" />
             Upload Lab Report

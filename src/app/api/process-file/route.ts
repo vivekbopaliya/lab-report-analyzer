@@ -52,6 +52,14 @@ export async function POST(request: NextRequest) {
 
     const result = await response.json();
 
+    // If no parameters are found, do not store in DB and return error
+    if (!result.parameters || result.parameters.length === 0) {
+      return NextResponse.json(
+        { message: "Please upload a valid report. No health parameters found." },
+        { status: 400 }
+      );
+    }
+
     const { parameters } = await createLabReport(
       user?.id,
       file.name,
